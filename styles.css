@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@tailwindcss base;
+@tailwindcss components;
+@tailwindcss utilities;
+@theme {
+    --font-display: 'Satoshi', sans-serif;
+    --breakpoint-3xl: 1920px;
+    --color-avocado-500: oklch(0.84, 0.18, 117.33);
+}
