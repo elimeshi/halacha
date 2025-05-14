@@ -89,11 +89,11 @@
                     </select>
                     <div id="posek-tags-${parentIndex}" class="mt-2"></div>
                 </div>
-                <div class="class-container" id="stances-1">
+                <div class="class-container" id="stances-${parentIndex}">
                     <div class="stance-block border rounded p-2 mb-2 bg-white relative">    
                         <div class="mb-2">
                             <label class="block text-sm font-medium">מהי עמדתו?</label>
-                            <select id="stance-select" class="w-full p-2 border rounded" onchange="toggleHalachaFields(this, 'halacha-${parentIndex}')">
+                            <select id="stance-select" class="w-full p-2 border rounded" onchange="toggleHalachaFields(this, 'halacha-${parentIndex}:1')">
                                 <option value="sover">סובר</option>
                                 <option value="posek">פוסק</option>
                                 <option value="metzaded">מצדד</option>
@@ -101,16 +101,17 @@
                                 <option value="lechatchila">לכתחילה - בדיעבד</option>
                             </select>
                         </div>
-                        <div class="mb-2" id="halacha-${parentIndex}">
+                        <div class="mb-2" id="halacha-${parentIndex}:1">
                             <label class="block text-sm font-medium">מה הוא סובר?</label>
                             <select class="w-full p-2 border rounded">
                                 <option value="">בחר סברא</option>
                                 ${svaraOpts}
                             </select>
                         </div>
+                        <button onclick="removeStance(this)" class="absolute text-xs top-2 left-2 bg-red-500 text-white px-1 py-0.3 rounded">מחק עמדה</button>
                     </div>
                 </div>
-                <button onclick="addStance(1)" class="bg-blue-500 text-white px-2 py-1 rounded">+ הוסף עמדה</button>
+                <button onclick="addStance(${parentIndex})" class="bg-blue-500 text-sm text-white px-1 py-0.5 rounded">+ הוסף עמדה</button>
                 <div id="inner-container-${parentIndex}" class="mr-8"></div>
                 <button onclick="addInnerAnswer(${parentIndex})" class="mt-2 bg-royal-blue text-white px-3 py-1 rounded">הוסף שיטה בדעתו</button>
                 <button onclick="removeAnswer(${parentIndex})" id="delete-btn-${parentIndex}" class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded" style="display: none;">מחק</button>
@@ -143,23 +144,29 @@
                     </select>
                     <div id="posek-tags-${parentIndex}-${childIndex}" class="mt-2"></div>
                 </div>
-                <div class="mb-2">
-                    <label class="block text-sm font-medium">מהי עמדתו?</label>
-                    <select class="w-full p-2 border rounded" onchange="toggleHalachaFields(this, 'halacha-${parentIndex}-${childIndex}')">
-                        <option value="sover">סובר</option>
-                        <option value="posek">פוסק</option>
-                        <option value="metzaded">מצדד</option>
-                        <option value="mistapek">מסתפק</option>
-                        <option value="lechatchila">לכתחילה - בדיעבד</option>
-                    </select>
+                <div class="class-container" id="stances-${parentIndex}-${childIndex}">
+                    <div class="stance-block border rounded p-2 mb-2 bg-white relative">    
+                        <div class="mb-2">
+                            <label class="block text-sm font-medium">מהי עמדתו?</label>
+                            <select class="w-full p-2 border rounded" onchange="toggleHalachaFields(this, 'halacha-${parentIndex}-${childIndex}:1')">
+                                <option value="sover">סובר</option>
+                                <option value="posek">פוסק</option>
+                                <option value="metzaded">מצדד</option>
+                                <option value="mistapek">מסתפק</option>
+                                <option value="lechatchila">לכתחילה - בדיעבד</option>
+                            </select>
+                        </div>
+                        <div class="mb-2" id="halacha-${parentIndex}-${childIndex}:1">
+                            <label class="block text-sm font-medium">מהי ההלכה?</label>
+                            <select class="w-full p-2 border rounded">
+                                <option value="">בחר סברא</option>
+                                ${svaraOpts}
+                            </select>
+                        </div>
+                        <button onclick="removeStance(this)" class="absolute text-xs top-2 left-2 bg-red-500 text-white px-1 py-0.3 rounded">מחק עמדה</button>
+                    </div>
                 </div>
-                <div class="mb-2" id="halacha-${parentIndex}-${childIndex}">
-                    <label class="block text-sm font-medium">מהי ההלכה?</label>
-                    <select class="w-full p-2 border rounded">
-                        <option value="">בחר סברא</option>
-                        ${svaraOpts}
-                    </select>
-                </div>
+                <button onclick="addStance('${parentIndex}-${childIndex}')" class="bg-blue-500 text-sm text-white px-1 py-0.5 rounded">+ הוסף עמדה</button>
                 <button class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded" onclick="removeInnerAnswer(${parentIndex}, ${childIndex})">מחק</button>
             `;
             innerContainer.appendChild(childDiv);
@@ -198,7 +205,7 @@
             stanceDiv.innerHTML = `
                 <div class="mb-2">
                     <label class="block text-sm font-medium">מהי עמדתו?</label>
-                    <select id="stance-select" class="w-full p-2 border rounded" onchange="toggleHalachaFields(this, 'halacha-${posekIndex}-${stanceCount}')">
+                    <select id="stance-select" class="w-full p-2 border rounded" onchange="toggleHalachaFields(this, 'halacha-${posekIndex}:${stanceCount}')">
                         <option value="sover">סובר</option>
                         <option value="posek">פוסק</option>
                         <option value="metzaded">מצדד</option>
@@ -206,14 +213,14 @@
                         <option value="lechatchila">לכתחילה - בדיעבד</option>
                     </select>
                 </div>
-                <div class="mb-2" id="halacha-${posekIndex}-${stanceCount}">
+                <div class="mb-2" id="halacha-${posekIndex}:${stanceCount}">
                     <label class="block text-sm font-medium">מה הוא סובר?</label>
                     <select class="w-full p-2 border rounded">
                         <option value="">בחר סברא</option>
                         ${svaraOpts}
                     </select>
                 </div>
-                <button onclick="removeStance(this)" class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded hidden">מחק עמדה</button>
+                <button onclick="removeStance(this)" class="absolute text-xs top-2 left-2 bg-red-500 text-white px-1 py-0.3 rounded">מחק עמדה</button>
             `;
             container.appendChild(stanceDiv);
             updateStanceDeleteButtons(container);
@@ -226,13 +233,15 @@
             updateStanceDeleteButtons(container);
         }
 
-        function updateStanceDeleteButtons(container) {
-            const stanceBlocks = container.querySelectorAll('.stance-block');
-            stanceBlocks.forEach((block, i) => {
-                const deleteBtn = block.querySelector('button');
-                deleteBtn.classList.toggle('hidden', stanceBlocks.length <= 1);
-            });
-        }
+        // function updateStanceDeleteButtons(container) {
+        //     const stanceBlocks = container.querySelectorAll('.stance-block');
+        //     stanceBlocks.forEach((block, i) => {
+        //         console.log(block.innerHTML);
+        //         console.log(block.querySelector('button'));
+        //         const deleteBtn = block.querySelector('button');
+        //         deleteBtn.classList.toggle('hidden', stanceBlocks.length <= 1);
+        //     });
+        // }
 
         function toggleHalachaFields(select, halachaId) {
             const halachaDiv = document.getElementById(halachaId);
@@ -312,7 +321,7 @@
         }
 
         function updateDeleteButtons() {
-            const answers = document.querySelectorAll("[id^='answer-'][id$='']");
+            const answers = document.querySelectorAll("[id^='answer-']");
             answers.forEach((answer, i) => {
                 const deleteBtn = answer.querySelector("button[onclick^='removeAnswer']");
                 if (deleteBtn) deleteBtn.style.display = answers.length > 1 ? "block" : "none";
@@ -329,7 +338,7 @@
 
         function updateInnerLabels(parentIndex) {
             const innerContainer = document.getElementById(`inner-container-${parentIndex}`);
-            const children = innerContainer.querySelectorAll("div[id^='answer-${parentIndex}-']");
+            const children = innerContainer.querySelectorAll(`div[id^='answer-${parentIndex}-']`);
             children.forEach((child, i) => {
                 const label = child.querySelector(".font-medium");
                 label.textContent = `שיטה בדעתו ${parentIndex}.${i+1}:`;
