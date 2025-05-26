@@ -178,6 +178,7 @@
             buildStanceOptions(document.getElementById(`stance-select-${parentIndex}:1`));
             toggleHalachaFields(document.getElementById(`stance-select-${parentIndex}:1`).value, document.getElementById(`svara-${parentIndex}:1`), [document.getElementById(`halacha1-${parentIndex}:1`), document.getElementById(`halacha2-${parentIndex}:1`)])
             updateDeleteButtons();
+            updateStanceDeleteButtons(document.getElementById(`stances-${parentIndex}`));
             updateAnswerLabels();
         }
 
@@ -194,10 +195,11 @@
                 <button class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded" onclick="removeInnerAnswer(${parentIndex}, ${childIndex})">מחק</button>
             `;
             innerContainer.appendChild(childDiv);
-            console.log(document.getElementById(`stance-select-${index}:1`));
             buildStanceOptions(document.getElementById(`stance-select-${index}:1`));
             toggleHalachaFields(document.getElementById(`stance-select-${index}:1`).value, document.getElementById(`svara-${index}:1`), [document.getElementById(`halacha1-${index}:1`), document.getElementById(`halacha2-${index}:1`)]);
             console.log(parentIndex);
+            updateStanceDeleteButtons(document.getElementById(`answer-${parentIndex}`));
+            updateStanceDeleteButtons(document.getElementById(`stances-${index}`));
             updateInnerLabels(parentIndex);
         }
 
@@ -219,32 +221,30 @@
 
         function addStance(posekIndex) {
             const container = document.getElementById(`stances-${posekIndex}`);
-            console.log(container);
             const stanceCount = container.children.length + 1;
             const stanceDiv = document.createElement("div");
             container.appendChild(stanceDiv);
             stanceDiv.outerHTML = stanceInnerHTML(posekIndex, stanceCount);
             buildStanceOptions(document.getElementById(`stance-select-${posekIndex}:${stanceCount}`));
             toggleHalachaFields(document.getElementById(`stance-select-${posekIndex}:${stanceCount}`).value, document.getElementById(`svara-${posekIndex}:${stanceCount}`), [document.getElementById(`halacha1-${posekIndex}:${stanceCount}`), document.getElementById(`halacha2-${posekIndex}:${stanceCount}`)])
-            // updateStanceDeleteButtons(container);
+            updateStanceDeleteButtons(container);
         }
 
         function removeStance(button) {
             const stanceBlock = button.closest('.stance-block');
-            stanceBlock.remove();
             const container = stanceBlock.parentElement;
+            stanceBlock.remove();
             updateStanceDeleteButtons(container);
         }
 
-        // function updateStanceDeleteButtons(container) {
-        //     const stanceBlocks = container.querySelectorAll('.stance-block');
-        //     stanceBlocks.forEach((block, i) => {
-        //         console.log(block.innerHTML);
-        //         console.log(block.querySelector('button'));
-        //         const deleteBtn = block.querySelector('button');
-        //         deleteBtn.classList.toggle('hidden', stanceBlocks.length <= 1);
-        //     });
-        // }
+        function updateStanceDeleteButtons(container) {
+            const stanceBlocks = container.querySelectorAll('.stance-block');
+            console.log(container.id + " has " + stanceBlocks.length + " stance blocks");
+            stanceBlocks.forEach((block, i) => {
+                const deleteBtn = block.querySelector('button');
+                deleteBtn.classList.toggle('hidden', stanceBlocks.length <= 1);
+            });
+        }
 
         function buildStanceOptions(stanceSelect) {
             
@@ -336,6 +336,12 @@
         function removeInnerAnswer(parentIndex, childIndex) {
             document.getElementById(`answer-${parentIndex}-${childIndex}`).remove();
             updateInnerLabels(parentIndex);
+            
+            // Ensure at least one stance remains for the parent answer
+            const parentContainer = document.getElementById(`answer-${parentIndex}`);
+            if (parentContainer.querySelectorAll('stance-block').length === 0) {
+                addStance(parentIndex); 
+            }
         }
 
         function updateDeleteButtons() {
