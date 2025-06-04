@@ -20,13 +20,14 @@
     <link href="output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-6">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md relative">
         <h1 id="question-text" class="text-royal-blue text-2xl font-semibold mb-4">טוען שאלה...</h1>
         <div id="answers-container">
             <!-- תשובות יתווספו כאן באופן דינמי -->
         </div>
 
         <button onclick="addAnswerField()" class="mt-4 bg-royal-blue text-white px-4 py-2 rounded">+ הוסף שיטה</button>
+        <button onclick="sendAnswers()" id="send-btn" class="absolute bottom-2 left-2 bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out group">שלח</button>
     </div>
 
     <script>
@@ -197,7 +198,6 @@
             innerContainer.appendChild(childDiv);
             buildStanceOptions(document.getElementById(`stance-select-${index}:1`));
             toggleHalachaFields(document.getElementById(`stance-select-${index}:1`).value, document.getElementById(`svara-${index}:1`), [document.getElementById(`halacha1-${index}:1`), document.getElementById(`halacha2-${index}:1`)]);
-            console.log(parentIndex);
             updateStanceDeleteButtons(document.getElementById(`answer-${parentIndex}`));
             updateStanceDeleteButtons(document.getElementById(`stances-${index}`));
             updateInnerLabels(parentIndex);
@@ -239,7 +239,6 @@
 
         function updateStanceDeleteButtons(container) {
             const stanceBlocks = container.querySelectorAll('.stance-block');
-            console.log(container.id + " has " + stanceBlocks.length + " stance blocks");
             stanceBlocks.forEach((block, i) => {
                 const deleteBtn = block.querySelector('button');
                 deleteBtn.classList.toggle('hidden', stanceBlocks.length <= 1);
@@ -370,6 +369,49 @@
                 const label = child.querySelector(".font-medium");
                 label.textContent = `שיטה בדעתו ${parentLabelIndex}.${i+1}:`;
             });
+        }
+
+        function collectStanceFields(stanceBlock) {
+            let result = {};
+            const stanceKey = stanceBlock.querySelector('[id^="stance"]').value;
+            result.stance = stanceKey;
+            const fields = Array.from(stanceBlock.querySelector('[id^="halacha"]').children).filter(e => getComputedStyle(e).display !== 'none');
+            fields.forEach(field => {
+                result[field.id.split('-')[0]] = field.querySelector('select').value;
+            });
+            return result;
+        }
+
+        function collectUserAnswers() {
+            const answers = [];
+            const answerElements = document.querySelectorAll('[id^="answer-"]');
+            
+            answerElements.forEach(answer => {
+                const id = answer.id.slice(7);
+                const posekTags = Array.from(answer.querySelectorAll(`#posek-tags-${id} .tag`))
+                                    .map(tag => tag.textContent);
+                let parentPoskim = [null];
+                // if it's an inner answer, get the parent poskim
+                if (id.includes('-')) {
+                    parentPoskim = Array.from(document.querySelectorAll(`#posek-tags-${id.split('-')[0]} .tag`))
+                                    .map(tag => tag.textContent);
+                }
+                
+                const stanceBlocks = Array.from(answer.querySelectorAll('.stance-block'));
+                const stances = stanceBlocks.map(collectStanceFields);
+                
+                answers.push({
+                    posek: posekTags,
+                    parentPoskim: parentPoskim,
+                    stances: stances
+                })
+            })
+            return answers;
+        }
+
+        function sendAnswers() {
+            sessionStorage.setItem('userAnswers', JSON.stringify(collectUserAnswers(), null, 2));
+            window.location.href = "results.html";
         }
     </script>
 </body>
