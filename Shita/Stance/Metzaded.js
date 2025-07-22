@@ -1,6 +1,9 @@
-export class Metzaded {
+import { Stance } from "./Stance.js";
+
+export class Metzaded extends Stance {
 
     constructor(halacha, svara) {
+        super();
         this.name = "metzaded";
         this.halacha = halacha;
         this.svara = svara;
@@ -14,7 +17,7 @@ export class Metzaded {
         }
     }
 
-    toString() {
-        return 'מצדד ש' + this.halacha + (!isBlank(this.svara) ? ' משום ש' + this.svara : '');
+    toString(isPlural = false) {
+        return 'מצדד' + (isPlural ? "ים" : "") + ' ש' + this.halacha + (!this.isBlank(this.svara) ? ' משום ש' + this.svara : '');
     }
 }

@@ -1,8 +1,11 @@
-export class Posek {
+import { Stance } from "./Stance.js";
+
+export class Posek extends Stance {
 
     constructor(halacha, svara) {
+        super();
         this.name = "posek";
-        this.halacha = halacha;
+        this.halacha = String(halacha || "");
         this.svara = svara;
     }
 
@@ -14,7 +17,7 @@ export class Posek {
         }
     }
 
-    toString() {
-        return 'פוסק ש' + this.halacha + (!isBlank(this.svara) ? ' משום ש' + this.svara : '');
+    toString(isPlural = false) {
+        return 'פוסק' + (isPlural ? "ים" : "") + ' ש' + (this.halacha.endsWith('.') ? this.halacha.slice(0, -1) : this.halacha) + (!this.isBlank(this.svara) ? ', משום ש' + this.svara : '.');
     }
 }

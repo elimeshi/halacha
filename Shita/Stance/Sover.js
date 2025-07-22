@@ -1,6 +1,9 @@
-export class Sover {
+import { Stance } from "./Stance.js";
+
+export class Sover extends Stance {
 
     constructor(svara) {
+        super();
         this.name = "sover";
         this.svara = svara;
     }
@@ -12,7 +15,7 @@ export class Sover {
         }
     }
 
-    toString() {
-        return 'סובר ש' + this.svara;
+    toString(isPlural = false) {
+        return 'סובר' + (isPlural ? "ים" : "") + ' ש' + this.svara;
     }
 }

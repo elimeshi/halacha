@@ -18,6 +18,6 @@ export class Shita {
     }
 
     toString() {
-        return `${this.poskim.join(", ") + (this.parentPoskim.length > 0 ? ' בשם ' + this.parentPoskim.join(", ") : '')}, ${this.stance.toString()}`;
+        return `${this.poskim.join(" ו") + (this.parentPoskim.length > 0 ? ' בשם ' + this.parentPoskim.join(" ו") : '')} ${this.stance.toString(this.poskim.length > 1)}`;
     }
 }

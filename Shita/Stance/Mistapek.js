@@ -1,6 +1,9 @@
-export class Mistapek {
+import { Stance } from "./Stance.js";
+
+export class Mistapek extends Stance {
 
     constructor(halacha1, halacha2) {
+        super();
         this.name = "mistapek";
         [this.halacha1, this.halacha2] = [halacha1, halacha2].sort();
     }
@@ -13,7 +16,7 @@ export class Mistapek {
         }
     }
 
-    toString() {
-        return 'מסתפק אם ' + this.halacha1 + ' או ' + this.halacha2;
+    toString(isPlural = false) {
+        return 'מסתפק' + (isPlural ? "ים" : "") + ' אם ' + this.halacha1 + ' או ' + this.halacha2;
     }
 }

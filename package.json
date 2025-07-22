@@ -1,0 +1,24 @@
+{
+  "name": "halacha",
+  "version": "1.0.0",
+  "description": "smart and dynamic deep halacha tests",
+  "main": "grade.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elimeshi/halacha.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elimeshi/halacha/issues"
+  },
+  "homepage": "https://github.com/elimeshi/halacha#readme",
+  "dependencies": {
+    "munkres-js": "^1.2.2"
+  }
+}

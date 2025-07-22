@@ -1,12 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="results.css">
     <title>תוצאות - בחינה הלכתית</title>
 </head>
 <body>
-    <div id="x"></div>
+    <div class="container">
+        <h1>תוצאות - שאלה הלכתית</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>תשובתך</th>
+                    <th>תשובה נכונה</th>
+                    <th>ציון</th>
+                </tr>
+            </thead>
+            <tbody id="results">
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>ציון סופי:</td>
+                    <td></td>
+                    <td id="totalScore">0</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     <script src="result.js" type="module"></script>
 </body>
 </html>

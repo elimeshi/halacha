@@ -117,13 +117,6 @@
                             </select>
                         </div>
                         <div class="mb-2" id="halacha-${posekIndex}:${stanceIndex}">
-                            <div id="svara-${posekIndex}:${stanceIndex}">
-                                <label class="block text-sm font-medium">מה הוא סובר?</label>
-                                <select class="w-full p-2 border rounded">
-                                    <option value="">בחר סברא</option>
-                                    ${svaraOpts}
-                                </select>
-                            </div>
                             <div id="halacha1-${posekIndex}:${stanceIndex}">
                                 <label class="block text-sm font-medium">מהי ההלכה?</label>
                                 <select class="w-full p-2 border rounded">
@@ -136,6 +129,13 @@
                                 <select class="w-full p-2 border rounded">
                                     <option value="">בחר הלכה משנית</option>
                                     ${halachaOpts}
+                                </select>
+                            </div>
+                            <div id="svara-${posekIndex}:${stanceIndex}">
+                                <label class="block text-sm font-medium">מהי סברתו?</label>
+                                <select class="w-full p-2 border rounded">
+                                    <option value="">בחר סברא</option>
+                                    ${svaraOpts}
                                 </select>
                             </div>
                         </div>
@@ -397,7 +397,7 @@
                                     .map(tag => tag.textContent);
                 }
                 
-                const stanceBlocks = Array.from(answer.querySelectorAll('.stance-block'));
+                const stanceBlocks = Array.from(answer.querySelectorAll(`#stances-${id} .stance-block`));
                 const stances = stanceBlocks.map(collectStanceFields);
                 
                 answers.push({
@@ -411,6 +411,7 @@
 
         function sendAnswers() {
             sessionStorage.setItem('userAnswers', JSON.stringify(collectUserAnswers(), null, 2));
+            sessionStorage.setItem('correctAnswers', JSON.stringify(currentQuestion.answers, null, 2));
             window.location.href = "results.html";
         }
     </script>
