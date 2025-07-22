@@ -37,6 +37,7 @@
         let svaraOpts = "";
         let halachaOpts = "";
         let currentQuestion = null;
+        let answeredQuestions;
         let answerCount = 0;
         const childCounts = {};
         let hasSvarot = false;
@@ -83,7 +84,8 @@
 
         function loadRandomQuestion() {
             // pick random
-            currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+            answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions')) || [];
+            currentQuestion = questions.filter(q => !answeredQuestions.includes(q.id))[Math.floor(Math.random() * questions.length)];
             document.getElementById('question-text').innerText = currentQuestion.question;
             svaraOpts = getOptionsHTML(currentQuestion.svarot);
             halachaOpts = getOptionsHTML(currentQuestion.psakim);
@@ -412,6 +414,9 @@
         function sendAnswers() {
             sessionStorage.setItem('userAnswers', JSON.stringify(collectUserAnswers(), null, 2));
             sessionStorage.setItem('correctAnswers', JSON.stringify(currentQuestion.answers, null, 2));
+            let answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions')) || [];
+            answeredQuestions.push(currentQuestion.id);
+            localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
             window.location.href = "results.html";
         }
     </script>

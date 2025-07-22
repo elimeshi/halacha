@@ -1,9 +1,119 @@
-@import "tailwindcss";
-@tailwindcss base;
+/* @tailwindcss base;
 @tailwindcss components;
 @tailwindcss utilities;
 @theme {
     --font-display: 'Satoshi', sans-serif;
     --breakpoint-3xl: 1920px;
     --color-avocado-500: oklch(0.84, 0.18, 117.33);
+} */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6fb;
+    color: #1a1a1a;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 50, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #0033a0;
+    margin-bottom: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+thead {
+    background-color: #0033a0;
+    color: white;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f0f4ff;
+}
+
+td:last-child {
+    text-align: center;
+    font-weight: bold;
+    color: #0033a0;
+}
+
+tfoot tr {
+    background-color: #e6ecff;
+    font-weight: bold;
+    color: #0033a0;
+    border-top: 2px solid #0033a0;
+}
+
+#nextButton {
+    margin: 1rem auto 0 0;
+    display: block;
+    padding: 0.5rem;
+    background-color: #0033a0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 900;
+    font-size: 1rem;
+}
+
+#nextButton:hover {
+    background-color: #002080;
+}
+
+.menu-container {
+    background-color: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 50, 0.1);
+    text-align: center;
+}
+
+.menu-container h1 {
+    color: #0033a0;
+    margin-bottom: 2rem;
+}
+
+#start-quiz {
+    background-color: #0033a0;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#start-quiz:hover {
+    background-color: #002080;
 }
