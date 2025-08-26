@@ -133,6 +133,33 @@ function compare() {
     return new Munkres().compute(squaredMatrix);
 }
 
+function indexOfMax(arr) {
+    if (!arr || arr.length === 0) return -1;
+    let max = arr[0];
+    let idx = 0;
+    for (let i = 1; i < arr.length; i++) if (arr[i] > max) {
+        max = arr[i];
+        idx = i;
+    }
+    return idx;
+}
+
+function highestShitaComparison(costMatrix) {
+    let assignments = {};
+    for (let i = 0; i < costMatrix[0].length; i++) assignments[i] = [];
+    for (let i = 0; i < costMatrix.length; i++) assignments[indexOfMax(costMatrix[i])].push(i);
+    return assignments;
+}
+
+// In this comparement, each correct answer can have multiple user answers assigned to it
+function directCompare() {
+    userAnswers = canonicalize(JSON.parse(sessionStorage.getItem('userAnswers')));
+    correctAnswers = parseCorrectAnsersToShitos(JSON.parse(sessionStorage.getItem('correctAnswers')));
+    const costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
+    return highestShitaComparison(costMatrix);
+}
+
+// Every correct answer is assigned to one user answer, and vice versa
 export function getAssignments() {
     assignments = compare();
     console.log(assignments);
@@ -144,4 +171,18 @@ export function getAssignments() {
             score: userAnswers[userIdx] && correctAnswers[correctIdx]? compareShitaScore(userAnswers[userIdx], correctAnswers[correctIdx]) : 0
         }
     });
+}
+
+// In this comparement, each correct answer can have multiple user answers assigned to it
+export function getDirectAssignments() {
+    assignments = directCompare();
+    console.log(assignments);
+    return Object.keys(assignments).map((correctIdx) => {
+        const userIdxs = assignments[correctIdx];
+        return {
+            userShitas: userIdxs.map(i => userAnswers[i]).join("\n") || "-",
+            correctShita: correctAnswers[correctIdx],
+            score: (userIdxs.reduce((sum, i) => sum + costMatrix[i][correctIdx], 0) / userIdxs.length) || 0,
+        }
+    })
 }
