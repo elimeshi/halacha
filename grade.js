@@ -9,6 +9,7 @@ import { Munkres } from './munkres.js';
 
 let userAnswers = [];
 let correctAnswers = [];
+let costMatrix = [];
 let assignments = [];
 
 const stanceClasses = {
@@ -127,7 +128,7 @@ function squareMatrix(matrix) {
 function compare() {
     userAnswers = canonicalize(JSON.parse(sessionStorage.getItem('userAnswers')));
     correctAnswers = parseCorrectAnsersToShitos(JSON.parse(sessionStorage.getItem('correctAnswers')));
-    const costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
+    costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
     const invertedMatrix = invertCostMatrix(costMatrix);
     const squaredMatrix = squareMatrix(invertedMatrix);
     return new Munkres().compute(squaredMatrix);
@@ -155,7 +156,7 @@ function highestShitaComparison(costMatrix) {
 function directCompare() {
     userAnswers = canonicalize(JSON.parse(sessionStorage.getItem('userAnswers')));
     correctAnswers = parseCorrectAnsersToShitos(JSON.parse(sessionStorage.getItem('correctAnswers')));
-    const costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
+    costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
     return highestShitaComparison(costMatrix);
 }
 
