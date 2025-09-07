@@ -38,6 +38,7 @@ export function canonicalize(rawAnswers) {
         const sortedMainPosek = [...answer.posek].sort();
         const sortedParentPoskim = [...(answer.parentPoskim || [])].sort();
         answer.stances.forEach((st, sidx) => {
+            console.log(st);
             const newStance = new stanceClasses[st.stance](...Object.values(st).slice(1));
             upsertShita(shitos, newStance, sortedMainPosek, sortedParentPoskim);
         });
@@ -180,10 +181,12 @@ export function getDirectAssignments() {
     console.log(assignments);
     return Object.keys(assignments).map((correctIdx) => {
         const userIdxs = assignments[correctIdx];
+        console.log(userIdxs.map(i => userAnswers[i]));
+        console.log(userIdxs.map(i => userAnswers[i]).join("\n"));
         return {
-            userShitas: userIdxs.map(i => userAnswers[i]).join("\n") || "-",
+            userShita: userIdxs.map(i => userAnswers[i]).join("\n") || "-",
             correctShita: correctAnswers[correctIdx],
             score: (userIdxs.reduce((sum, i) => sum + costMatrix[i][correctIdx], 0) / userIdxs.length) || 0,
-        }
-    })
+        };
+    });
 }
