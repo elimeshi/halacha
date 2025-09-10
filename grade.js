@@ -3,6 +3,7 @@ import { Posek } from './Shita/Stance/Posek.js';
 import { Metzaded } from './Shita/Stance/Metzaded.js';
 import { Mistapek } from './Shita/Stance/Mistapek.js';
 import { Lchatchila } from './Shita/Stance/Lchatchila.js';
+import { Posek as Rav } from './Shita/Posek.js';
 import { Shita } from './Shita/Shita.js';
 
 import { Munkres } from './munkres.js';
@@ -20,13 +21,12 @@ const stanceClasses = {
     "Lchatchila": Lchatchila,
 }
 
-function upsertShita(shitos, newStance, poskim, parentPoskim) {
+function upsertShita(shitos, newStance, poskim) {
     const foundShita = shitos.find(shita => {shita.stance.compareTo(newStance)});
     if (foundShita) {
         foundShita.addPoskim(poskim);
-        foundShita.addParentPoskim(parentPoskim);
     } else {
-        shitos.push(new Shita(poskim, parentPoskim, newStance));
+        shitos.push(new Shita(poskim, newStance));
     }
 }
 
@@ -35,12 +35,10 @@ export function canonicalize(rawAnswers) {
 
     Object.keys(rawAnswers).forEach((i) => {
         const answer = rawAnswers[i];
-        const sortedMainPosek = [...answer.posek].sort();
-        const sortedParentPoskim = [...(answer.parentPoskim || [])].sort();
+        const sortedPoskim = answer.poskim.map(p => new Rav(p.posek, p.parentPoskim)).sort((p1, p2) => p1.posek.localCompare(p2.posek));
         answer.stances.forEach((st, sidx) => {
-            console.log(st);
             const newStance = new stanceClasses[st.stance](...Object.values(st).slice(1));
-            upsertShita(shitos, newStance, sortedMainPosek, sortedParentPoskim);
+            upsertShita(shitos, newStance, sortedPoskim);
         });
     });
 
@@ -53,10 +51,14 @@ export function parseCorrectAnsersToShitos(rawCorrectAnswers) {
     Object.keys(rawCorrectAnswers).forEach((i) => {
         const answer = rawCorrectAnswers[i];
         const newStance = new stanceClasses[answer.stance.name](...Object.values(answer.stance).slice(1));
-        shitos.push(new Shita(answer.poskim, answer.parentPoskim, newStance));
+        shitos.push(new Shita(answer.poskim.map(posek => new Rav(posek.posek, posek.parentPoskim)), newStance));
     });
 
     return shitos;
+}
+
+function equalPoseks(p1, p2) {
+    return JSON.stringify(p1) === JSON.stringify(p2);
 }
 
 function compareShitaScore(userShita, correctShita) {
@@ -64,10 +66,10 @@ function compareShitaScore(userShita, correctShita) {
     let poskimScore = 0;
     const userStance = userShita.stance;
     const correctStance = correctShita.stance;
+    const USName = userStance.name; // User Stance name ('posek' / 'metzaded' etc.)
+    const CSName = correctStance.name; // Correct stance name
 
     // Compare stances
-    const USName = userStance.name;
-    const CSName = correctStance.name;
     const posekAndMetzaded = ["posek", "metzaded"];
     const mistapekAndLchatchila = ["mistapek", "Lchatchila"];
     if (posekAndMetzaded.includes(USName) && posekAndMetzaded.includes(CSName)) {
@@ -89,11 +91,11 @@ function compareShitaScore(userShita, correctShita) {
     }
 
     // compare poskim
-    const userPoskim = userShita.poskim.concat(userShita.parentPoskim);
-    const correctPoskim = correctShita.poskim.concat(correctShita.parentPoskim);
+    const userPoskim = userShita.poskim;
+    const correctPoskim = correctShita.poskim;
     if (userPoskim.length > 0) {
-        if (userPoskim.every(p => correctPoskim.includes(p))) poskimScore = 2;
-        else if (userPoskim.some(p => correctPoskim.includes(p))) poskimScore = 1;
+        if (!userPoskim.some(p1 => correctPoskim.some(p2 => equalPoseks(p1, p2)))) poskimScore = 0;
+        else poskimScore = userPoskim.every(p1 => correctPoskim.some(p2 => equalPoseks(p1, p2))) ? 2 : 1;
     } 
 
     return stanceScore + poskimScore;
