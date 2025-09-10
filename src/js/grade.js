@@ -1,12 +1,10 @@
-import { Sover } from './Shita/Stance/Sover.js';
-import { Posek } from './Shita/Stance/Posek.js';
-import { Metzaded } from './Shita/Stance/Metzaded.js';
-import { Mistapek } from './Shita/Stance/Mistapek.js';
-import { Lchatchila } from './Shita/Stance/Lchatchila.js';
-import { Posek as Rav } from './Shita/Posek.js';
-import { Shita } from './Shita/Shita.js';
-
-import { Munkres } from './munkres.js';
+import { Sover } from '../model/Shita/Stance/Sover.js';
+import { Posek } from '../model/Shita/Stance/Posek.js';
+import { Metzaded } from '../model/Shita/Stance/Metzaded.js';
+import { Mistapek } from '../model/Shita/Stance/Mistapek.js';
+import { Lchatchila } from '../model/Shita/Stance/Lchatchila.js';
+import { Posek as Rav } from '../model/Shita/Posek.js';
+import { Shita } from '../model/Shita/Shita.js';
 
 let userAnswers = [];
 let correctAnswers = [];
@@ -112,31 +110,6 @@ function calculateCostMatrix(userAnswers, correctAnswers) {
     return costMatrix;
 }
 
-function invertCostMatrix(costMatrix) {
-    const max = Math.max(...costMatrix.flat());
-    return costMatrix.map(row => row.map(val => max - val));
-}
-
-function squareMatrix(matrix) {
-    const size = Math.max(matrix.length, matrix[0].length);
-    matrix.map(row => {
-        while (row.length < size) row.push(Number.MAX_SAFE_INTEGER);
-    })
-    while (matrix.length < size) {
-        matrix.push(new Array(size).fill(Number.MAX_SAFE_INTEGER));
-    }
-    return matrix;
-}
-
-function compare() {
-    userAnswers = canonicalize(JSON.parse(sessionStorage.getItem('userAnswers')));
-    correctAnswers = parseCorrectAnsersToShitos(JSON.parse(sessionStorage.getItem('correctAnswers')));
-    costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
-    const invertedMatrix = invertCostMatrix(costMatrix);
-    const squaredMatrix = squareMatrix(invertedMatrix);
-    return new Munkres().compute(squaredMatrix);
-}
-
 function indexOfMax(arr) {
     if (!arr || arr.length === 0) return -1;
     let max = arr[0];
@@ -155,31 +128,15 @@ function highestShitaComparison(costMatrix) {
     return assignments;
 }
 
-// In this comparement, each correct answer can have multiple user answers assigned to it
-function directCompare() {
+function compare() {
     userAnswers = canonicalize(JSON.parse(sessionStorage.getItem('userAnswers')));
     correctAnswers = parseCorrectAnsersToShitos(JSON.parse(sessionStorage.getItem('correctAnswers')));
     costMatrix = calculateCostMatrix(userAnswers, correctAnswers);
     return highestShitaComparison(costMatrix);
 }
 
-// Every correct answer is assigned to one user answer, and vice versa
 export function getAssignments() {
     assignments = compare();
-    console.log(assignments);
-    return assignments.map(([userIdx, correctIdx]) => {
-        // if (userIdx >= userAnswers.length || correctIdx >= correctAnswers.length) return null;
-        return {
-            userShita: userAnswers[userIdx] || "-",
-            correctShita: correctAnswers[correctIdx] || "-",
-            score: userAnswers[userIdx] && correctAnswers[correctIdx]? compareShitaScore(userAnswers[userIdx], correctAnswers[correctIdx]) : 0
-        }
-    });
-}
-
-// In this comparement, each correct answer can have multiple user answers assigned to it
-export function getDirectAssignments() {
-    assignments = directCompare();
     console.log(assignments);
     return Object.keys(assignments).map((correctIdx) => {
         const userIdxs = assignments[correctIdx];

@@ -1,5 +1,4 @@
 import { getAssignments } from './grade.js';
-import { getDirectAssignments } from './grade.js';
 
 const TOTAL_QUESTIONS = 2; // Total number of questions in the quiz
 let totalScore = 0;
@@ -20,7 +19,7 @@ function createScoreTable() {
     const container = document.getElementById('results');
     const totalScoreCell = document.getElementById('totalScore');
     
-    getDirectAssignments().forEach(element => {
+    getAssignments().forEach(element => {
         const row = document.createElement('tr');
         row.className = 'assignment';
         row.appendChild(createCell(element.userShita));
