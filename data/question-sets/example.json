@@ -1,0 +1,34 @@
+[
+    {
+    "id": "",
+    "question": "",
+    "svarot": [],
+    "psakim": [],
+    "answers": [
+      {
+        "poskim": [{"posek": "", "parentPoskim": ""}],
+        "stance": {
+          "name": "",
+          "halacha": "",
+          "svara": ""
+        }
+      }
+    ]
+  },
+  {
+    "id": "253_1",
+    "question": "האם מותר להשהות קדירה שלא נתבשלה כל צרכה על גבי תנור שהוסק בקש וגבבא וגרוף וקטום?",
+    "svarot": [],
+    "psakim": ["מותר"],
+    "answers": [
+      {
+        "poskim": [{"posek": "", "parentPoskim": ""}],
+        "stance": {
+          "name": "",
+          "halacha": "",
+          "svara": ""
+        }
+      }
+    ]
+  }
+]

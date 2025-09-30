@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שאלה הלכתית</title>
+    <style>
+        .bg-royal-blue { background-color: #4169E1; }
+        .text-royal-blue { color: #4169E1; }
+        .tag-box {
+            position: relative;
+            width: fit-content;
+            height: fit-content;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            padding: 10px 10px 10px 0px;
+        }
+        .tag-box * {
+            margin-left: 10px;
+        }
+        .tag-flex-box {
+            display: flex;
+            gap: 0;
+            align-items: center;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #4169E1;
+            color: white;
+            border-radius: 5px;
+        }
+        .btn {
+            background-color: white;
+            color: #6b7280;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            text-align: center;
+            border-radius: 5px;
+            margin: 0 !important;
+            padding: 0;
+            width: 0px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .tag-box:hover .btn,
+        .tag-box.hovered .btn{
+            width: fit-content;
+            opacity: 1;
+            padding: 3px 6px;
+            margin-left: 10px !important;
+            pointer-events: all;
+        }
+
+        button.selected {
+            background-color: #f9fafb;
+            color: #003277;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+    </style>
+    <link href="src/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md relative">
+        <h1 id="question-text" class="text-royal-blue text-2xl font-semibold mb-4">טוען שאלה...</h1>
+        <div id="answers-container">
+            <!-- תשובות יתווספו כאן באופן דינמי -->
+        </div>
+
+        <button class="mt-4 bg-royal-blue text-white px-4 py-2 rounded">+ הוסף שיטה</button>
+        <button id="send-btn" class="absolute bottom-2 left-2 bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out group">שלח</button>
+    </div>
+
+    <script type="module" src="src/js/question.js"></script>
+</body>
+</html>
