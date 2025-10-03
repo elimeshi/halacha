@@ -111,12 +111,12 @@
                 <!-- Modal Title -->
                 <h2 class="text-xl font-semibold mb-4">שמור שאלה</h2>
                 
-                <form id="productForm" onsubmit="submitForm(event)">
+                <form id="saveForm">
                 <!-- Product Name -->
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">שם השאלה</label>
                     <input type="text" name="questionName" class="w-full mt-1 p-2 border rounded-md" required>
-                </div>
+                </div> -->
                 
                 <!-- Save Location Options -->
                 <div class="mb-4">
@@ -134,15 +134,15 @@
                 </div>
                 
                 <!-- Existing Categories Dropdown -->
-                <div id="existingSetBlock" class="mb-4">
+                <div id="existingSetBlock" data-role="fileName" class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">בחר קבוצה</label>
                     <select name="existingSet" class="w-full mt-1 p-2 border rounded-md">
-                    <!-- Categories will be added here dynamically -->
+                    <!-- Existing question sets will be added here automatically -->
                     </select>
                 </div>
                 
                 <!-- New Category Input -->
-                <div id="newSetBlock" class="mb-4 hidden">
+                <div id="newSetBlock" data-role="fileName" class="mb-4 hidden">
                     <label class="block text-sm font-medium text-gray-700">שם הקבוצה החדשה</label>
                     <input type="text" name="newSetName" class="w-full mt-1 p-2 border rounded-md">
                 </div>

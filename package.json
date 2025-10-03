@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/elimeshi/halacha#readme",
   "dependencies": {
-    "axios": "^1.12.2",
     "express": "^5.1.0",
     "munkres-js": "^1.2.2"
   }

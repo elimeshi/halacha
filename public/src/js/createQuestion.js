@@ -4,9 +4,8 @@ let poskimOptions = "";
 let answerCount = 0;
 let halachaArr = [];
 let svaraArr = [];
-let svaraOpts = [];
 let halachaOpts = [];
-const childCounts = {};
+let svaraOpts = [];
 let selectedPosekTags = [];
 
 // Stance configuration object
@@ -46,11 +45,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     const sendButton = document.getElementById('send-btn');
     sendButton.addEventListener('click', openSubmitModal);
     sendButton.previousElementSibling.addEventListener('click', addAnswerField);
-    const submit = document.getElementById('submit');
-    submit.querySelector(':scope > button').addEventListener('click', closeSubmitModal);
-    submit.querySelector('form button').addEventListener('click', (e) => saveQuestion(e));
-    submit.querySelectorAll('input[name="saveOption"]').forEach(r => r.addEventListener('change', toggleQuestionSetInput));
-    submit.querySelector('select').innerHTML = getOptionsHTML((await fetch('/data/question-sets').then(res => res.json()))['files']);
+    const submitModal = document.getElementById('submit');
+    submitModal.querySelector(':scope > button').addEventListener('click', closeSubmitModal);
+    submitModal.querySelector('form').addEventListener('submit', (e) => saveQuestion(e));
+    submitModal.querySelectorAll('input[name="saveOption"]').forEach(r => r.addEventListener('change', toggleQuestionSetInput));
+    submitModal.querySelector('select').innerHTML = getOptionsHTML((await fetch('/data/question-sets').then(res => res.json()))['files'].map(file => {
+        const dotIndex = file.lastIndexOf('.');
+        return dotIndex === -1 ? file : file.slice(0, dotIndex);
+    }));
     setupList('halacha');
     setupList('svara');
     addAnswerField();
@@ -145,7 +147,6 @@ function answerInnerHTML(index) {
 
 function addAnswerField() {
     const index = ++answerCount;
-    childCounts[index] = 0;
     const container = document.getElementById("answers-container");
     const answerDiv = document.createElement("div");
     answerDiv.className = "mb-4 p-4 border rounded-lg bg-gray-50 relative";
@@ -363,7 +364,7 @@ function collectStanceFields(stanceBlock) {
     return result;
 }
 
-function collectUserAnswers() {
+function collectAnswers() {
     const answers = [];
     const answerElements = document.querySelectorAll('[id^="answer-"]');
 
@@ -373,10 +374,11 @@ function collectUserAnswers() {
         const poskim = posekTags.map(tagBox => new Posek(tagBox.querySelector('.tag').textContent, tagBox.querySelectorAll('[data-role="parent-posek"]').forEach(t => t.textContent)));
         const stanceBlocks = Array.from(answer.querySelectorAll(`.stance-block`));
         const stances = stanceBlocks.map(collectStanceFields);
-        answers.push({
+        stances.forEach(stance => answers.push({
             poskim: poskim,
-            stances: stances
-        })
+            stances: stance
+        }));
+        
     })
     return answers;
 }
@@ -396,12 +398,38 @@ function toggleQuestionSetInput() {
     document.getElementById('newSetBlock').classList.toggle('hidden', existing);
 }
 
+async function postQuestion(fileName, content) {
+    let message;
+    
+    fetch('/data/question-sets/' + fileName, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(content)
+    }).then(res => res.json()).then(res => {
+        console.log('Server respond: ', res);
+        alert('השאלה נוספה בהצלחה ל' + fileName + '!');
+    }).catch(err => {
+        console.error('Error: ', err);
+        alert('Error: ', err);
+    }).finally(() => window.location.href = "/");
+}
+
 function saveQuestion(event) {
     event.preventDefault();
-    sessionStorage.setItem('userAnswers', JSON.stringify(collectUserAnswers(), null, 2));
-    sessionStorage.setItem('correctAnswers', JSON.stringify(currentQuestion.answers, null, 2));
-    let answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions')) || [];
-    answeredQuestions.push(currentQuestion.id);
-    localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
-    window.location.href = "results.html";
+    
+    const form = event.target;
+    const questionSetWrapper = Array.from(form.querySelectorAll('[data-role="fileName"]')).find((div) => !div.classList.contains('hidden'));
+    const mode = questionSetWrapper.id === 'newSetBlock' ? 'write' : 'append';
+    const fileName = questionSetWrapper.querySelector('input, select').value;
+    const questionName = document.getElementById('question-text').textContent;
+
+    let question = {
+        id: fileName + '_' + Date.now().toString(36),
+        question: questionName,
+        svarot: svaraArr,
+        psakim: halachaArr,
+        answers: collectAnswers(),
+        mode: mode
+    };
+    postQuestion(fileName, question);
 }
